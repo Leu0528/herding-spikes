@@ -175,6 +175,10 @@ class ActionController():
         A.CombinedMeanShift(h=h, alpha=alpha, PrincComp=scorePCA, njobs=-2, mbf=mbf)
         self.clusterID = A.ClusterID()
         self.centres = A.ClusterLoc()
+        self.nClusters = np.shape(self.centres)[1]
+        self.setColours()
+        self.setTimeHistogram()
+        self.mw.confWaveFormWidget()
         result = 'Found ' + str(A.NClusters()) + ' clusters for ' + str(A.NData()) + ' spikes.'
         return result
 
