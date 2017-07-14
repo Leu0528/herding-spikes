@@ -795,7 +795,6 @@ class MainWindow(QtGui.QMainWindow):
         # set the table model
         header = ['Hold', 'Cluster', 'Spikes/s', 'PCA', 'Flag']
 
-
         for c in range(len(clusters)):
 
             row = ["U", str(clusters[c]), "{:.3f}".format(countspikes[c]), "", "U" ]
@@ -822,34 +821,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.tableView.setSortingEnabled(True)
         self.ui.tableView.horizontalHeader().sortIndicatorChanged.connect(self.ct.indicator)
         self.ui.tableView.keyPressEvent = self.keyPress
-
-            # self.newData = []
-            # # timedif = (self.getTimeEnd()-self.getTimeStart())/self.ct.getSampling()
-            # #
-            # # self.ui.tableView.clicked.connect(self.listhandler2)
-            # # set the table model
-            # header = ['Hold', 'Cluster', 'Spikes/s', 'PCA', 'Flag']
-            #
-            #
-            # for c in range(len(clusters)):
-            #
-            #     row = ["U", str(clusters[c]), "{:.3f}".format(countspikes[c]), "", "U" ]
-            #     self.newData.append(row)
-            #
-            # self.tm.setColors(self.ct.getColours())
-            # self.tm.reset(self.newData)
-
-            # self.proxyModel.setValidRows([True]*(len(clusters)))
-            # self.proxyModel.setSortRole(Qt.UserRole)
-            # self.proxyModel.setHHeader(header)
-            # self.ui.tableView.resizeColumnsToContents()
-            #
-            # self.ui.tableView.setSelectionMode(QAbstractItemView.SingleSelection)
-            # self.ui.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
-            # self.ui.tableView.setSortingEnabled(True)
-            # self.ui.tableView.horizontalHeader().sortIndicatorChanged.connect(self.ct.indicator)
-            # self.ui.tableView.keyPressEvent = self.keyPress
-
 
 
     def keyPress(self,e):
@@ -914,12 +885,6 @@ class MainWindow(QtGui.QMainWindow):
                 self.alltime()
                 self.filterTime()
                 self.ui.pushButton_29.setDisabled(False)
-                # print(self.tm.rowCount(parent=None))
-                # print(self.tm.removeRow(0))
-                # self.tm.reset(parent=None)
-                # print(self.proxyModel.removeRow(0))
-                # self.ui.mpl.canvas.update()
-                # self.ui.mpl.canvas.repaint()
 
     def openfileraw(self):
         #self.spikefile = 'C:\\Users\\user\\Documents\\MsCfiles\\data\\P29_16_05_14_retina02_left_stim2_smallarray_fullfield_SpkD45_v18_clustered.hdf5'
@@ -930,15 +895,7 @@ class MainWindow(QtGui.QMainWindow):
 
         try:
             if self.spikefile:
-                # self.ct.reset()
                 self.reset()
-                # self.ui.mpl.canvas.ax.clear()
-                # self.ui.widget_5.canvas.ax.clear()
-                # self.ui.widget_9.canvas.ax.clear()
-                # self.ui.widget_11.canvas.ax.clear()
-                # self.ui.widget_12.canvas.ax.clear()
-
-
 
                 clustered = self.ct.loadData(str(self.spikefile))
 
@@ -956,8 +913,7 @@ class MainWindow(QtGui.QMainWindow):
                 else:
                     self.printLog("incompatiable file")
                     return "incompatiable"
-                # self.ui.mpl.canvas.update()
-                # self.ui.mpl.canvas.repaint()
+
             else:
                 self.printLog("An .hdf5 file must be provided using the Open File dialog.")
                 return "invalid"
@@ -966,7 +922,6 @@ class MainWindow(QtGui.QMainWindow):
 
     def run_cluster(self):
         self.ct.reset()
-
 
         if self.ui.line_h.text()!="":
             self.h = float(self.ui.line_h.text())
@@ -984,18 +939,11 @@ class MainWindow(QtGui.QMainWindow):
 
         result = self.ct.runCluster(self.h, self.alpha, self.mbf)
         if result:
-            # self.newSpikefile = fileName
-            # self.ui.mpl.canvas.ax.clear()
-            # self.ui.widget_5.canvas.ax.clear()
-            # self.ui.widget_9.canvas.ax.clear()
-            # self.ui.widget_11.canvas.ax.clear()
-            # self.ui.widget_12.canvas.ax.clear()
             self.reset()
             self.printLog(result)
             self.alltime()
             self.filterTime()
-            # self.ui.mpl.canvas.update()
-            # self.ui.mpl.canvas.flush_events()
+
         else:
             self.printLog("Cluster unsuccessful")
 
@@ -1283,22 +1231,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.widget_9.canvas.ax.clear()
         self.ui.widget_11.canvas.ax.clear()
         self.ui.widget_12.canvas.ax.clear()
-        if self.tm != None and self.proxyModel != None:
-            print("TRUE")
-
-
-            # self.tm.beginResetModel()
-            # self.tm.endResetModel()
-            # self.proxyModel.reset()
-
-            # self.ui.tableView.setModel(self.proxyModel)
-
-            # self.proxyModel.deleteLater()
-            # print(self.tm.rowCount(parent=None))
-            # self.tm.clear()
-            # self.proxyModel.clear()
-            # self.ui.tableView.reset()
-            # self.tm = MyTableModel(datain=[], headerdata=[], self)
 
 
 

@@ -279,7 +279,6 @@ class ActionController():
 
 
     def handleSelection(self, currentitem):
-        print("handleSelection")
         if (self.previousbutton != None):
             if self.previousbutton == currentitem: #If I pressed the current cluster, then deactivate it
                 self.mw.deselectList1()
@@ -639,7 +638,6 @@ class ActionController():
         return self.lastClusterSelected
 
     def deleteLastClusterSel(self):
-        print("deleteLastClusterSel")
         if self.lastClusterSelected is not None:
             i = self.lastClusterSelected
             c = self.clf[i]
@@ -686,12 +684,7 @@ class ActionController():
         i = int(i)
 
         self.mw.printLog("")
-        print("Activated")
-        print("x={}".format(x))
-        print("y={}".format(y))
-        print("c={}".format(c))
-        print("i={}".format(i))
-        print("last={}".format(self.lastClusterSelected))
+
         if self.lastClusterSelected != i:
             if self.lastClusterSelected is not None:
 
@@ -809,7 +802,6 @@ class ActionController():
                 self.previousbutton = self.mw.setCurrentRowList1(i)
 
         else:
-            print("------------")
             self.mw.deselectList1()
 
             self.mw.disableSpikeControls(True)
@@ -1599,7 +1591,6 @@ class ActionController():
         self.handleChange(i,row)
 
     def onpickexpl(self, event):
-        print("onpickexpl")
 
         x, y = event.mouseevent.xdata, event.mouseevent.ydata
 

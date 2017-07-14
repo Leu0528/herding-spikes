@@ -366,22 +366,6 @@ class MyTableModel(QAbstractTableModel):
     def columnCount(self, parent):
         return len(self.arraydata[0])
 
-    def reset(self, newData):
-        self.arraydata = newData
-        self.holdonColor = 'grey'
-        self.holdOffColor= 'white'
-        self.flagColor = 'orange'
-        self.unFlagColor = 'green'
-        self.selectColor = 'blue'
-        self.selstatus = ['U', 'H', 'U', 'H']
-        self.selcol  = [self.holdOffColor, self.holdonColor, self.selectColor, self.selectColor]
-        self.flagstatus = ['U', 'F']
-        self.flagcol = [self.unFlagColor, self.flagColor]
-        self.sortstring = [0,3,4]
-        self.sortnumber = [1,2]
-        self.tableLength = 0
-
-
     ##def setTableLength(self, length):
     ##    self.tableLength = length
 
