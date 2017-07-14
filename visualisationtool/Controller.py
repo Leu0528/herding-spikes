@@ -128,6 +128,8 @@ class ActionController():
     def loadData(self, SpikeFile):
 
         self.db = DataBase()
+        self.reset()
+        # self.mw.reset()
 
         clustered = self.db.setupDatabase(SpikeFile)
 
@@ -167,6 +169,7 @@ class ActionController():
         # O.Save(fileName)
         # return result, fileName
 
+        # self.mw.reset()
         A = spikeclass(self.data)
         A.LoadTimes(self.times)
         A.SetSampling(self.sampling)
@@ -276,6 +279,7 @@ class ActionController():
 
 
     def handleSelection(self, currentitem):
+        print("handleSelection")
         if (self.previousbutton != None):
             if self.previousbutton == currentitem: #If I pressed the current cluster, then deactivate it
                 self.mw.deselectList1()
@@ -635,6 +639,7 @@ class ActionController():
         return self.lastClusterSelected
 
     def deleteLastClusterSel(self):
+        print("deleteLastClusterSel")
         if self.lastClusterSelected is not None:
             i = self.lastClusterSelected
             c = self.clf[i]
@@ -681,6 +686,12 @@ class ActionController():
         i = int(i)
 
         self.mw.printLog("")
+        print("Activated")
+        print("x={}".format(x))
+        print("y={}".format(y))
+        print("c={}".format(c))
+        print("i={}".format(i))
+        print("last={}".format(self.lastClusterSelected))
         if self.lastClusterSelected != i:
             if self.lastClusterSelected is not None:
 
@@ -798,7 +809,7 @@ class ActionController():
                 self.previousbutton = self.mw.setCurrentRowList1(i)
 
         else:
-
+            print("------------")
             self.mw.deselectList1()
 
             self.mw.disableSpikeControls(True)
@@ -1588,6 +1599,7 @@ class ActionController():
         self.handleChange(i,row)
 
     def onpickexpl(self, event):
+        print("onpickexpl")
 
         x, y = event.mouseevent.xdata, event.mouseevent.ydata
 
@@ -1724,3 +1736,66 @@ class ActionController():
 
     def getClusterNumber(self, index):
         return self.pointsclust[index][3]
+
+    def reset(self):
+        self.clf = None
+        self.abc = None
+        self._points = np.empty([0, 4], dtype=float)
+        self.pointspca = np.empty([0, 4], dtype=float)
+        self.pointsclust = None
+        self.lastClusterSelected = None
+        self.clusterpoint = None
+        self.swave = None
+        self.wave = None
+        self.n = None
+        self.bins = None
+        self.patchesh = None
+        self.ii = None
+        self.timesh = None
+        self.selectedh= None
+        self.selectedspk = None
+        self.vspikes = None
+        self.spikepoint = None
+        self.spikewave = None
+        self.vspike = None
+        self.lastSpikeSelected = None
+        self.listRowSelected = np.array([],dtype=int)
+        self.listSelected = []
+        self.listSaved = []
+        self.lastxleftbinSelected = -1
+        self.previousbutton = None
+        self.listWaveSelected = []
+        self.listSpikesSelected = []
+        self.listProjecSelected = []
+        self.listProjecFiltSelected = []
+        self.nbins = 0
+        self.checkAll = False
+        self.fit = None
+        self.clustproj = None
+        self.zord = 10
+        self.spikeproj = None
+        self.projfilt = None
+        self.listSpikePlot = []
+        self.spikespoint = None
+        self.countspikes = np.array([],dtype=float)
+        self.meanpca = np.array([],dtype=int)
+        self.filtered = np.array([],dtype=int)
+        self.flagged= np.array([],dtype=int)
+        self.mint = None
+        self.maxt = None
+        self.p = None
+        self.patches = []
+        self.selpoints = np.empty([0, 4], dtype=float)
+        self.listselpoints = []
+        self.listselpatches =[]
+        self.des = False
+        self.des2 = False
+        self.offsets = None
+        self.circles = []
+        self.now = 0
+        self.past = -1
+        self.last = 0
+        self.lasti = -1
+        self.lastsp = 0
+        self.lastspi = -1
+        self.lastcp = None

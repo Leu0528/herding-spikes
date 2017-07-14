@@ -87,6 +87,9 @@ class MainWindow(QtGui.QMainWindow):
 
         self.ui.groupBox_15.setVisible(False)
 
+        self.tm = None
+        self.proxyModel = None
+
 
         #Add listeners to all buttons
         QtCore.QObject.connect(self.ui.open_raw, QtCore.SIGNAL('clicked()'), self.select_file_raw)
@@ -786,7 +789,9 @@ class MainWindow(QtGui.QMainWindow):
         self.tabledata = []
         timedif = (self.getTimeEnd()-self.getTimeStart())/self.ct.getSampling()
 
-        self.ui.tableView.clicked.connect(self.listhandler2)
+        if not self.tm:
+            self.ui.tableView.clicked.connect(self.listhandler2)
+
         # set the table model
         header = ['Hold', 'Cluster', 'Spikes/s', 'PCA', 'Flag']
 
@@ -817,6 +822,34 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.tableView.setSortingEnabled(True)
         self.ui.tableView.horizontalHeader().sortIndicatorChanged.connect(self.ct.indicator)
         self.ui.tableView.keyPressEvent = self.keyPress
+
+            # self.newData = []
+            # # timedif = (self.getTimeEnd()-self.getTimeStart())/self.ct.getSampling()
+            # #
+            # # self.ui.tableView.clicked.connect(self.listhandler2)
+            # # set the table model
+            # header = ['Hold', 'Cluster', 'Spikes/s', 'PCA', 'Flag']
+            #
+            #
+            # for c in range(len(clusters)):
+            #
+            #     row = ["U", str(clusters[c]), "{:.3f}".format(countspikes[c]), "", "U" ]
+            #     self.newData.append(row)
+            #
+            # self.tm.setColors(self.ct.getColours())
+            # self.tm.reset(self.newData)
+
+            # self.proxyModel.setValidRows([True]*(len(clusters)))
+            # self.proxyModel.setSortRole(Qt.UserRole)
+            # self.proxyModel.setHHeader(header)
+            # self.ui.tableView.resizeColumnsToContents()
+            #
+            # self.ui.tableView.setSelectionMode(QAbstractItemView.SingleSelection)
+            # self.ui.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
+            # self.ui.tableView.setSortingEnabled(True)
+            # self.ui.tableView.horizontalHeader().sortIndicatorChanged.connect(self.ct.indicator)
+            # self.ui.tableView.keyPressEvent = self.keyPress
+
 
 
     def keyPress(self,e):
@@ -871,8 +904,8 @@ class MainWindow(QtGui.QMainWindow):
 
     def select_file_raw(self):
         self.spikefile = QtGui.QFileDialog.getOpenFileName(self, "Open Data File", "", "HDF5 data files (*.hdf5)")
-        # self.newSpikefile = self.spikefile
         if self.spikefile:
+            self.ui.mpl.canvas.ax.clear()
             self.ui.line_raw.setText(self.spikefile)
             self.ui.line_raw.setToolTip(self.spikefile)
             clustered = self.openfileraw()
@@ -881,6 +914,12 @@ class MainWindow(QtGui.QMainWindow):
                 self.alltime()
                 self.filterTime()
                 self.ui.pushButton_29.setDisabled(False)
+                # print(self.tm.rowCount(parent=None))
+                # print(self.tm.removeRow(0))
+                # self.tm.reset(parent=None)
+                # print(self.proxyModel.removeRow(0))
+                # self.ui.mpl.canvas.update()
+                # self.ui.mpl.canvas.repaint()
 
     def openfileraw(self):
         #self.spikefile = 'C:\\Users\\user\\Documents\\MsCfiles\\data\\P29_16_05_14_retina02_left_stim2_smallarray_fullfield_SpkD45_v18_clustered.hdf5'
@@ -891,11 +930,21 @@ class MainWindow(QtGui.QMainWindow):
 
         try:
             if self.spikefile:
+                # self.ct.reset()
+                self.reset()
+                # self.ui.mpl.canvas.ax.clear()
+                # self.ui.widget_5.canvas.ax.clear()
+                # self.ui.widget_9.canvas.ax.clear()
+                # self.ui.widget_11.canvas.ax.clear()
+                # self.ui.widget_12.canvas.ax.clear()
+
+
+
                 clustered = self.ct.loadData(str(self.spikefile))
-                # print(clustered)
-                # print(str(self.newSpikefile))
+
+
                 if clustered == "unclustered":
-                    self.printLog("Try pressing the Cluster button")
+                    self.printLog("Try pressing the Cluster button (Deafult parameters are 0.3, 0.3 and 40)")
                     return "unclustered"
                 elif clustered == "clustered":
                     self.ui.line_start.setDisabled(False)
@@ -907,6 +956,8 @@ class MainWindow(QtGui.QMainWindow):
                 else:
                     self.printLog("incompatiable file")
                     return "incompatiable"
+                # self.ui.mpl.canvas.update()
+                # self.ui.mpl.canvas.repaint()
             else:
                 self.printLog("An .hdf5 file must be provided using the Open File dialog.")
                 return "invalid"
@@ -914,15 +965,37 @@ class MainWindow(QtGui.QMainWindow):
             self.printLog(str(ValueError.message))
 
     def run_cluster(self):
-        self.h = float(self.ui.line_h.text())
-        self.alpha = float(self.ui.line_alpha.text())
-        self.mbf = float(self.ui.line_mbf.text())
+        self.ct.reset()
+
+
+        if self.ui.line_h.text()!="":
+            self.h = float(self.ui.line_h.text())
+        else:
+            self.h = 0.3
+        if self.ui.line_alpha.text()!="":
+            self.alpha = float(self.ui.line_alpha.text())
+        else:
+            self.alpha = 0.3
+        if self.ui.line_mbf.text()!="":
+            self.mbf = float(self.ui.line_mbf.text())
+        else:
+            self.mbf = 40
+        # self.printLog("Clustering params: h={}, alpha={}, mbf={}".format(self.h,self.alpha,self.mbf))
+
         result = self.ct.runCluster(self.h, self.alpha, self.mbf)
         if result:
             # self.newSpikefile = fileName
+            # self.ui.mpl.canvas.ax.clear()
+            # self.ui.widget_5.canvas.ax.clear()
+            # self.ui.widget_9.canvas.ax.clear()
+            # self.ui.widget_11.canvas.ax.clear()
+            # self.ui.widget_12.canvas.ax.clear()
+            self.reset()
             self.printLog(result)
             self.alltime()
             self.filterTime()
+            # self.ui.mpl.canvas.update()
+            # self.ui.mpl.canvas.flush_events()
         else:
             self.printLog("Cluster unsuccessful")
 
@@ -1203,6 +1276,31 @@ class MainWindow(QtGui.QMainWindow):
 
     def isCompletePCAView(self):
         return self.ui.radioButton_5.isChecked()
+
+    def reset(self):
+        self.ui.mpl.canvas.ax.clear()
+        self.ui.widget_5.canvas.ax.clear()
+        self.ui.widget_9.canvas.ax.clear()
+        self.ui.widget_11.canvas.ax.clear()
+        self.ui.widget_12.canvas.ax.clear()
+        if self.tm != None and self.proxyModel != None:
+            print("TRUE")
+
+
+            # self.tm.beginResetModel()
+            # self.tm.endResetModel()
+            # self.proxyModel.reset()
+
+            # self.ui.tableView.setModel(self.proxyModel)
+
+            # self.proxyModel.deleteLater()
+            # print(self.tm.rowCount(parent=None))
+            # self.tm.clear()
+            # self.proxyModel.clear()
+            # self.ui.tableView.reset()
+            # self.tm = MyTableModel(datain=[], headerdata=[], self)
+
+
 
 class MyThread(QThread):
 
