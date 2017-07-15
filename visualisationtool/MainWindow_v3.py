@@ -106,7 +106,7 @@ class MainWindow(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.pushButton_6, QtCore.SIGNAL('clicked()'), self.ct.goafterwards)
         QtCore.QObject.connect(self.ui.pushButton_5, QtCore.SIGNAL('clicked()'), self.ct.gobackwards)
 
-        QtCore.QObject.connect(self.ui.pushButton_7, QtCore.SIGNAL('clicked()'), self.printPCA)
+        # QtCore.QObject.connect(self.ui.pushButton_7, QtCore.SIGNAL('clicked()'), self.printPCA)
         QtCore.QObject.connect(self.ui.pushButton_24, QtCore.SIGNAL('clicked()'), self.flagClusters)
         QtCore.QObject.connect(self.ui.pushButton_25, QtCore.SIGNAL('clicked()'), self.unflagClusters)
         QtCore.QObject.connect(self.ui.pushButton, QtCore.SIGNAL('clicked()'), self.changecolor)
@@ -225,7 +225,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.pushButton_28.setDisabled(True)
         self.ui.pushButton_5.setDisabled(True)
         self.ui.pushButton_6.setDisabled(True)
-        self.ui.pushButton_7.setDisabled(True)
+        # self.ui.pushButton_7.setDisabled(True)
         self.ui.pushButton_25.setDisabled(True)
         self.ui.pushButton_26.setDisabled(True)
         self.ui.line_start.setDisabled(True)
@@ -529,7 +529,7 @@ class MainWindow(QtGui.QMainWindow):
         #When the PCA computation has finished, it receives such signal to print in the PCA window the clusters that
         #are in hold on state or selected
         self.ui.textBrowser.setText("Computing PCA finished...\n")
-        self.ui.pushButton_7.setDisabled(True)
+        # self.ui.pushButton_7.setDisabled(True)
         self.ct.printPCAClusters()
 
 
@@ -563,7 +563,7 @@ class MainWindow(QtGui.QMainWindow):
         self.printLog("Filtering finished...\n")
         self.ui.pushButton_29.setDisabled(True)
         # self.ui.pushButton_10.setDisabled(True)
-        self.ui.pushButton_7.setDisabled(False)
+        # self.ui.pushButton_7.setDisabled(False)
 
         self.disableFilterControls(False)
 
@@ -925,6 +925,7 @@ class MainWindow(QtGui.QMainWindow):
             if clustered == "clustered":
                 self.alltime()
                 self.filterTime()
+                self.printPCA()
                 self.ui.pushButton_29.setDisabled(False)
 
     def openfileraw(self):
@@ -984,6 +985,7 @@ class MainWindow(QtGui.QMainWindow):
             self.printLog(result)
             self.alltime()
             self.filterTime()
+            self.printPCA()
 
         else:
             self.printLog("Cluster unsuccessful")
