@@ -7,9 +7,10 @@ import numpy as np
 from PyQt4 import QtCore
 from Controller import ActionController
 from PyQt4.QtGui import QColor, QDialog, QRadioButton, QTableWidgetItem, QCheckBox, QPixmap, QLabel, QAbstractItemView, \
-    QApplication, QTableView, QBrush, QItemSelectionModel
-from PyQt4.QtCore import Qt
+    QApplication, QTableView, QBrush, QItemSelectionModel, QWidget
+from PyQt4.QtCore import Qt, QSettings, QPoint, QSize, QVariant
 from DialogConf import Dialog
+from ConfigParser import SafeConfigParser
 #import scipy.special._ufuncs_cxx
 import time
 import matplotlib as mpl
@@ -26,13 +27,18 @@ class MainWindow(QtGui.QMainWindow):
         mpl.rcParams['axes.titlesize'] = 7   # fontsize of the axes title
         mpl.rcParams['axes.labelsize'] = 7 # fontsize of the x any y labels
 
-        QtGui.QWidget.__init__(self, parent)
+        # QtGui.QWidget.__init__(self, parent)
+        QtGui.QMainWindow.__init__(self, parent)
+        # super(MainWindow, self).__init__()
         #_fromUtf8 = QtCore.QString.fromUtf8
+
         self.ui = Ui_MainWindow()
         self.cw = Ui_Dialog()
         self.ui.setupUi(self)
         self.diag = Dialog(self)
         self.cw.setupUi(self.diag)
+
+        self.startEvent()
 
         self.listLocClu = []
         self.listDataPlot = []
@@ -61,7 +67,6 @@ class MainWindow(QtGui.QMainWindow):
         self.visiblePCA = True
 
         self.spikefile = ""
-        # self.newSpikefile = ""
         self.lineth = None
         self.colorspike = 'red'
         self.colorpoint = 'blue'
@@ -147,6 +152,42 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.pushButton.setStyleSheet("QWidget { background-color : blue}")
         self.ui.pushButton_28.setToolTip("Saves the flagged clusters in the current directory")
 
+
+
+    def startEvent(self):
+        self.config = SafeConfigParser()
+        self.config.read('config.ini')
+        if 'main' in self.config.sections():
+            # print self.config.get('main', 'size1') # -> "value1"
+            # print self.config.get('main', 'size2') # -> "value1"
+            # print self.config.get('main', 'pos1') # -> "value2"
+            # print self.config.get('main', 'pos2') # -> "value2"
+            # print self.config.get('main', 'dir')
+            self.resize(self.config.getint('main', 'size1'), self.config.getint('main', 'size2'))
+            self.move(self.config.getint('main', 'pos1'), self.config.getint('main', 'pos2'))
+        # print self.config.get('main', 'key3') # -> "value3"
+
+        # getfloat() raises an exception if the value is not a float
+        # a_float = config.getfloat('main', 'a_float')
+
+        # getint() and getboolean() also do this for their respective types
+        # an_int = config.getint('main', 'an_int')
+
+    def closeEvent(self, e):
+        # Write window size and position to config file
+        # config = SafeConfigParser()
+        self.config.read('config.ini')
+        if 'main' not in self.config.sections():
+            self.config.add_section('main')
+        self.config.set('main', 'size1', str(self.size().width()))
+        self.config.set('main', 'size2', str(self.size().height()))
+        self.config.set('main', 'pos1', str(self.pos().x()))
+        self.config.set('main', 'pos2', str(self.pos().y()))
+        self.config.set('main', 'dir', os.path.dirname(str((self.spikefile))))
+        # self.config.set('main', 'key3', 'value3')
+
+        with open('config.ini', 'w') as f:
+            self.config.write(f)
 
     def configureSpatialmapPlot(self):
         #Initializes the axes information of the Spatial map
@@ -874,7 +915,7 @@ class MainWindow(QtGui.QMainWindow):
 
 
     def select_file_raw(self):
-        self.spikefile = QtGui.QFileDialog.getOpenFileName(self, "Open Data File", "", "HDF5 data files (*.hdf5)")
+        self.spikefile = QtGui.QFileDialog.getOpenFileName(self, "Open Data File", self.config.get('main', 'dir'), "HDF5 data files (*.hdf5)" )
         if self.spikefile:
             self.ui.mpl.canvas.ax.clear()
             self.ui.line_raw.setText(self.spikefile)
