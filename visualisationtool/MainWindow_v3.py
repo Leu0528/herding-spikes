@@ -95,6 +95,7 @@ class MainWindow(QtGui.QMainWindow):
         self.tm = None
         self.proxyModel = None
 
+        self.cthread = ClusterThread(self, self.ct)
 
         #Add listeners to all buttons
         QtCore.QObject.connect(self.ui.open_raw, QtCore.SIGNAL('clicked()'), self.select_file_raw)
@@ -152,6 +153,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.pushButton.setStyleSheet("QWidget { background-color : blue}")
         self.ui.pushButton_28.setToolTip("Saves the flagged clusters in the current directory")
 
+        self.connect(self.cthread, QtCore.SIGNAL("finished()"), self.afterClustering)
 
 
     def startEvent(self):
@@ -941,7 +943,6 @@ class MainWindow(QtGui.QMainWindow):
 
                 clustered = self.ct.loadData(str(self.spikefile))
 
-
                 if clustered == "unclustered":
                     self.printLog("Try pressing the Cluster button (Deafult parameters are 0.3, 0.3 and 40)")
                     return "unclustered"
@@ -979,14 +980,28 @@ class MainWindow(QtGui.QMainWindow):
             self.mbf = 40
         # self.printLog("Clustering params: h={}, alpha={}, mbf={}".format(self.h,self.alpha,self.mbf))
 
-        result = self.ct.runCluster(self.h, self.alpha, self.mbf)
-        if result:
+        self.printLog("Clustering...")
+        self.ui.pushButton_31.setEnabled(False)
+        self.cthread.start()
+        # result = self.ct.runCluster(self.h, self.alpha, self.mbf)
+        # if result:
+        #     self.reset()
+        #     self.printLog(result)
+        #     self.alltime()
+        #     self.filterTime()
+        #     self.printPCA()
+        #
+        # else:
+        #     self.printLog("Cluster unsuccessful")
+
+    def afterClustering(self):
+        self.ui.pushButton_31.setEnabled(True)
+        if self.cthread.result:
             self.reset()
-            self.printLog(result)
+            self.printLog(self.cthread.result)
             self.alltime()
             self.filterTime()
             self.printPCA()
-
         else:
             self.printLog("Cluster unsuccessful")
 
@@ -1287,3 +1302,15 @@ class MyThread(QThread):
 
     def run(self):
         self.ct.computePCA()
+
+
+class ClusterThread(QThread):
+
+    def __init__(self, mw, ct, parent=None):
+        ''' Constructor. '''
+        QThread.__init__(self, parent)
+        self.mw = mw
+        self.ct = ct
+
+    def run(self):
+        self.result = self.ct.runCluster(self.mw.h, self.mw.alpha, self.mw.mbf)
