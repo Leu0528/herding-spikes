@@ -293,13 +293,13 @@ class MainWindow(QtGui.QMainWindow):
 
     def hideTime(self):
         if not self.ui.pushButton_32.isChecked():
+            self.ui.groupBox_15.setVisible(False)
+            self.ui.pushButton_32.setText("Segment")
+        else:
             self.ui.groupBox_15.setVisible(True)
             self.ui.pushButton_32.setText("Hide")
             self.ui.groupBox.update()
             self.ui.groupBox.repaint()
-        else:
-            self.ui.groupBox_15.setVisible(False)
-            self.ui.pushButton_32.setText("Segment")
 
 
     def isNumber(self, x):
