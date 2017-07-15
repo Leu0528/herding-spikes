@@ -384,3 +384,11 @@ class NavigationToolbar3(NavigationToolbar2QT, QtWidgets.QToolBar):
 
         self.draw()
         self.push_current()
+
+
+    def restoreAxes(self, xmin, xmax, ymin, ymax):
+        a = self.canvas.figure.get_axes()
+        a[0].set_xlim(xmin, xmax)
+        a[0].set_ylim(ymin, ymax)
+        self.draw()
+        self.push_current()

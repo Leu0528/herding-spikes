@@ -241,6 +241,16 @@ class MainWindow(QtGui.QMainWindow):
         else:
             self.printLog("You haven't selected any clusters yet")
 
+    def storeAxes(self):
+        self.lastxAxes = self.ui.mpl.canvas.figure.get_axes()[0].get_xlim()
+        self.lastyAxes = self.ui.mpl.canvas.figure.get_axes()[0].get_ylim()
+
+    def restoreMap(self):
+        if self.lastxAxes is not None and self.lastyAxes is not None:
+            self.ui.mpl.ntb.restoreAxes(self.lastxAxes[0], self.lastxAxes[1], self.lastyAxes[0], self.lastyAxes[1])
+        else:
+            self.printLog("No last map data")
+
     def saveFlagged(self):
         #Saves the flagged clusters in the file flagged.txt
         f=open('flagged.txt','w')
@@ -965,7 +975,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def run_cluster(self):
         self.ct.reset()
-
+        self.storeAxes()
         if self.ui.line_h.text()!="":
             self.h = float(self.ui.line_h.text())
         else:
@@ -1001,6 +1011,7 @@ class MainWindow(QtGui.QMainWindow):
             self.printLog(self.cthread.result)
             self.alltime()
             self.filterTime()
+            self.restoreMap()
             self.printPCA()
         else:
             self.printLog("Cluster unsuccessful")
