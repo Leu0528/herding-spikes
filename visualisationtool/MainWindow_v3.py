@@ -559,7 +559,7 @@ class MainWindow(QtGui.QMainWindow):
         return float(self.ui.line_end.text())
 
 
-    def filterTime(self):
+    def filterTime(self, isAlltime=False):
         #Starts filtering the clusters that are within the start and end times given by the user
 
         if not self.checkingDataFinal(self.ui.line_start, self.ui.line_end):
@@ -571,6 +571,8 @@ class MainWindow(QtGui.QMainWindow):
 
         self.printLog("")
         self.printLog("Filtering started...\n")
+        if not isAlltime == True:
+            self.reset()
         self.ct.filterIndexes(self.timestart, self.timeend)
         self.printLog("Filtering finished...\n")
         self.ui.pushButton_29.setDisabled(True)
@@ -936,7 +938,7 @@ class MainWindow(QtGui.QMainWindow):
             print(clustered)
             if clustered == "clustered":
                 self.alltime()
-                self.filterTime()
+                self.filterTime(True)
                 self.printPCA()
                 self.ui.pushButton_29.setDisabled(False)
 
@@ -1010,7 +1012,7 @@ class MainWindow(QtGui.QMainWindow):
             self.reset()
             self.printLog(self.cthread.result)
             self.alltime()
-            self.filterTime()
+            self.filterTime(True)
             self.restoreMap()
             self.printPCA()
         else:
