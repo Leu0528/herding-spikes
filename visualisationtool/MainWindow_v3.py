@@ -1296,6 +1296,16 @@ class MainWindow(QtGui.QMainWindow):
     def isCompletePCAView(self):
         return self.ui.radioButton_5.isChecked()
 
+    def filterVisible(self):
+        self.diag.cw.checkBox_4.setCheckState(QtCore.Qt.Checked)
+        self.diag.accept()
+        self.checkClusters()
+
+    def unfilterVisible(self):
+        self.uncheckClusters()
+        self.diag.cw.checkBox_4.setCheckState(QtCore.Qt.Unchecked)
+        self.diag.accept()
+
     def reset(self):
         self.ui.mpl.canvas.ax.clear()
         self.ui.widget_5.canvas.ax.clear()
