@@ -21,6 +21,7 @@ import sys
 CLUSTERING_PATH = os.getcwd() + '/../clustering'
 sys.path.insert(0, CLUSTERING_PATH)
 from herdingspikes import spikeclass, ImportInterpolated
+import h5py
 
 
 class ActionController():
@@ -1701,7 +1702,7 @@ class ActionController():
         """Saves data, cluster centres and ClusterIDs to a hdf5 file.
         Offers compression of the shapes, 'lzf'
         appears a good trade-off between speed and performance.'"""
-        #     O.Save(Folder + '/' + Filename.replace('.hdf5',
+        # O.Save(Folder + '/' + Filename.replace('.hdf5',
                                                 #    '_clustered_' + str(h) + '_' + str(alpha) + '.hdf5'))
         g = h5py.File(string, 'w')
         g.create_dataset("data", data=self.data)
