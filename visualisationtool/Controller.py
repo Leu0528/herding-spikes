@@ -1697,6 +1697,28 @@ class ActionController():
         #plt.axis('scaled')
 
 
+    def Save(self, string, compression=None):
+        """Saves data, cluster centres and ClusterIDs to a hdf5 file.
+        Offers compression of the shapes, 'lzf'
+        appears a good trade-off between speed and performance.'"""
+        #     O.Save(Folder + '/' + Filename.replace('.hdf5',
+                                                #    '_clustered_' + str(h) + '_' + str(alpha) + '.hdf5'))
+        g = h5py.File(string, 'w')
+        g.create_dataset("data", data=self.data)
+        # g.create_dataset("expinds", data=self.__expinds)
+        if self.centres != np.array([]):
+            g.create_dataset("centres", data=self.centres)
+        if self.clusterID != np.array([]):
+            g.create_dataset("cluster_id", data=self.clusterID)
+        if self.times != np.array([]):
+            g.create_dataset("times", data=self.times)
+        if self.shapes != np.array([]):
+            g.create_dataset("shapes",
+                             data=self.shapes,
+                             compression=compression)
+        if self.sampling:
+            g.create_dataset("Sampling", data=self.sampling)
+        g.close()
 
     def getMaxTimeHistogram(self):
         return np.max(self.nbins)
