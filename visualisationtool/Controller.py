@@ -1581,12 +1581,12 @@ class ActionController():
             i, x, y, c = self.snapsel(x, y)
         else:
             i, x, y, c = self.snap2(x,y)
-            self.now = time.clock()
-
-            if (self.now - self.past)< 0.5:
-                self.past = self.now
-                return
-            self.past = self.now
+            # self.now = time.clock()
+            #
+            # if (self.now - self.past)< 0.5:
+            #     self.past = self.now
+            #     return
+            # self.past = self.now
         row = self.sortclf[self.clf[i]]
         self.mw.changeCheckedStatus(row)
         self.handleChange(i,row)
