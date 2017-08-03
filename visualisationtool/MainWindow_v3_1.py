@@ -14,7 +14,7 @@ from ConfigParser import SafeConfigParser
 #import scipy.special._ufuncs_cxx
 import time
 import matplotlib as mpl
-import os
+import os, threading
 
 #_fromUtf8 = QtCore.QString.fromUtf8
 
@@ -540,6 +540,7 @@ class MainWindow(QtGui.QMainWindow):
         #Lauches the thread associated to the PCA computation
         self.ui.textBrowser.setText("Computing PCA started...\n")
         self.thread.start()
+        self.ui.pushButton_31.setDisabled(True)
 
     def updateUi(self):
         #When the PCA computation has finished, it receives such signal to print in the PCA window the clusters that
@@ -547,6 +548,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.textBrowser.setText("Computing PCA finished...\n")
         # self.ui.pushButton_7.setDisabled(True)
         self.ct.printPCAClusters()
+        self.ui.pushButton_31.setDisabled(False)
 
 
     def getTimeStart(self):
@@ -1307,7 +1309,7 @@ class MainWindow(QtGui.QMainWindow):
         Folder, Filename = os.path.split(os.path.abspath(str(self.spikefile)))
         self.ct.Save(cwd + '/' + Filename.replace('.hdf5',
                                                    '_clustered_' + str(self.h) + '_' + str(self.alpha) + '.hdf5'))
-        self.printLog("File has been saved in current directory successfully")                                           
+        self.printLog("File has been saved in current directory successfully")
 
     def reset(self):
         self.ui.mpl.canvas.ax.clear()
@@ -1339,4 +1341,5 @@ class ClusterThread(QThread):
         self.ct = ct
 
     def run(self):
+        threading.current_thread().name = 'MainThread'
         self.result = self.ct.runCluster(self.mw.h, self.mw.alpha, self.mw.mbf)
