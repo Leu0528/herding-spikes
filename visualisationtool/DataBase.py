@@ -9,7 +9,8 @@ class DataBase():
         # RAW: 'Sampling', 'Locations', 'Shapes', 'Times'
         # CLUSTERED: 'Sampling', 'data', 'shapes', 'times', 'expinds', 'cluster_id', 'centres'
         f=h5py.File(spikeFile,'r')
-        if f.keys() == ['Sampling','centres','cluster_id','data','expinds','shapes','times']:
+        # if f.keys() == ['Sampling','centres','cluster_id','data','shapes','times']:
+        if 'Sampling' and 'data' and 'shapes' and 'centres' and 'times' and 'cluster_id' in f.keys():
             self.clusterID = np.array(f['cluster_id'].value,dtype=int)
             self.shapes = np.array(f['shapes'].value,dtype=float)
             self.data = np.array(f['data'].value,dtype=float)
